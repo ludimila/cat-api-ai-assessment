@@ -69,13 +69,35 @@ The app renders no images. Add them.
 scrollable gallery that pages correctly: no duplicates, no gaps, and it stops at
 the end rather than paging into nothing.
 
+### Which id to send
+
+Breeds and images have separate id spaces, and both fields are called `id`.
+Follow these rules and you will not have to work out which image belongs to
+which breed.
+
+| | Looks like | Read it from |
+|---|---|---|
+| **Breed id** | `siam`, `beng`, `abys` | the `id` on a breed |
+| **Image id** | `ai6Jps4sx`, `J2PmlIizw` | the `id` on an image, and a breed's `reference_image_id` |
+
+1. Send the **breed** id as `breed_ids`. Never send an image id there.
+2. Send an **image** id only as the path of `/images/{id}`.
+3. To find which breed an image belongs to, read the `breeds` array on the
+   image object. Do not try to derive it from the id.
+4. If a gallery comes back empty, check which kind of id you sent before you
+   look for a bug in your paging. Getting this wrong does not raise an error:
+
+```
+GET /images/siam                        ->  404  {"message": "Image not found"}
+GET /images/search?breed_ids=ai6Jps4sx  ->  200  []
+```
+
 ### How to call the image endpoints
 
-Base URL `https://api.thecatapi.com/v1`, header `x-api-key` on every request.
-Without the header you get `403`.
+Send `x-api-key` on every request to `https://api.thecatapi.com/v1`. Without it
+you get `403`.
 
-**One image, the breed's own cover.** Every breed already carries a
-`reference_image_id`.
+**For one breed's cover image**, pass its `reference_image_id` as the path.
 
 ```
 GET /images/ai6Jps4sx
@@ -86,12 +108,12 @@ GET /images/ai6Jps4sx
   "id": "ai6Jps4sx",
   "url": "https://cdn2.thecatapi.com/images/ai6Jps4sx.jpg",
   "width": 1110,
-  "height": 811
+  "height": 811,
+  "breeds": [{ "id": "siam", "name": "Siamese" }]
 }
 ```
 
-**Many images for one breed.** `breed_ids` takes the breed's `id`, such as
-`beng` or `siam`.
+**For a breed's gallery**, pass its breed id as `breed_ids`.
 
 ```
 GET /images/search?breed_ids=beng&limit=10&page=0&order=ASC
@@ -104,22 +126,17 @@ GET /images/search?breed_ids=beng&limit=10&page=0&order=ASC
 ]
 ```
 
-The response is a bare array. The **total count is not in the body**; it arrives
-in the `pagination-count` response header, alongside `pagination-page` and
-`pagination-limit`. Bengal has 22 images.
+Then:
 
-Three things worth knowing before you build on this:
-
-The image files sit on a public CDN. `cdn2.thecatapi.com` needs no API key and
-no custom transport, so `AsyncImage` loads a `url` straight from the JSON.
-
-**Image search does not promise a stable order.** Satisfy yourself about what
-the default ordering actually does before you paginate, and prove to yourself
-that page two really is page two. This is the part of the task most likely to
-ship broken.
-
-`limit` caps at 100 for a single request, and the free tier allows 10,000
-requests per month, so avoid anything that polls.
+1. Load each `url` directly. `cdn2.thecatapi.com` needs no API key and no
+   custom transport, so hand the string to `AsyncImage`.
+2. Read the total from the **`pagination-count` response header**, not the
+   body. The body is a bare array. Bengal returns 22 images.
+3. Decide what the default ordering does before you paginate, and prove to
+   yourself that page two is really page two. This is the part of the task most
+   likely to ship broken.
+4. Keep `limit` at or below 100 per request, and do not poll. The free tier
+   allows 10,000 requests per month.
 
 ### Reference: a breed
 

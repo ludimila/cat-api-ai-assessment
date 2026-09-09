@@ -31,6 +31,7 @@ still tell you how the candidate works.
 
 | Feature | Max | Quality (0 / 0.5 / 1) | Points | Note |
 |---|---|---|---|---|
+| Breed images | 25 | | | Paged without duplicates? |
 | Favourites, optimistic | 20 | | | |
 | Repository tests | 20 | | | |
 | Vote | 15 | | | |
@@ -38,7 +39,7 @@ still tell you how the candidate works.
 | Offline cache | 10 | | | |
 | Swift 6 | 10 | | | |
 
-**Feature score (Task 0 + menu):** ______ of 110
+**Feature score (Task 0 + menu):** ______ of 135
 
 ## Meter
 

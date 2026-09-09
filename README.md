@@ -8,6 +8,26 @@ a deliberately broken search, a menu of features priced in points, and a hard
 token budget. Because tokens cost points, the exercise makes prompt quality,
 context management, and verification discipline visible and comparable.
 
+## Breed images
+
+The starter renders no images. Downloading them is the highest-value item on the
+menu, and it works: image URLs come from the API but the files themselves sit on
+a public CDN, so `AsyncImage` loads them with no key and no custom transport.
+
+```
+GET /v1/images/search?breed_ids=beng&limit=10&page=0&order=ASC
+GET /v1/images/{reference_image_id}          # the breed's own cover image
+```
+
+The first returns a list, the second resolves the `reference_image_id` every
+breed already carries. Both were verified against the live API.
+
+There is a trap in it. Ordering defaults to random, so paging without
+`order=ASC` returns overlapping pages and the same cat twice. The total count
+arrives in the `pagination-count` response header rather than the body. Whether
+a candidate finds that themselves is one of the more interesting things this
+exercise surfaces.
+
 ## Running a session
 
 ```bash

@@ -68,12 +68,14 @@ Fixing that is part of the task.
 
 ## The menu
 
-Pick what you like, in any order, once Task 0 is green. No screen renders a cat
-image; favourites and votes both work off each breed's `reference_image_id`,
-which every breed already carries.
+Pick what you like, in any order, once Task 0 is green. The starter renders no
+images at all; favourites and votes work off each breed's `reference_image_id`,
+which every breed already carries, so you can ship those without touching the
+image feature.
 
 | Points | Feature | Accepted when |
 |---|---|---|
+| 25 | **Breed images** | Each row shows its breed's image, loaded from the CDN and cached by the system. Opening a breed shows a scrollable gallery that pages correctly: no duplicates, no gaps, and it stops at the end rather than paging into nothing. |
 | 20 | **Favourites, optimistic** | A heart on the row toggles instantly. `POST` / `DELETE /v1/favourites`. A failed call rolls the UI back. `GET` restores state on launch. |
 | 20 | **Repository tests** | A seam between the view and the network, tested through `StubURLProtocol`: success, decode failure, HTTP error, and cancellation. |
 | 15 | **Vote** | `POST /v1/votes` with a stable `sub_id`. The result is visible on the row. |
@@ -119,6 +121,8 @@ month, so avoid loops that poll.
 |---|---|---|
 | GET | `/breeds?limit=&page=` | Full breed list |
 | GET | `/breeds/search?q=` | Name search |
+| GET | `/images/search?breed_ids=&limit=&page=&order=` | Images for a breed. Read the `pagination-count` response header, and read the note below before you page |
+| GET | `/images/{image_id}` | One image, including the breed's `reference_image_id` |
 | GET | `/favourites?sub_id=` | Your favourites |
 | POST | `/favourites` | Body `{"image_id": "...", "sub_id": "..."}` |
 | DELETE | `/favourites/{favourite_id}` | Id comes from the POST or GET response |
@@ -127,6 +131,11 @@ month, so avoid loops that poll.
 
 `sub_id` is a string you choose to namespace your data. Pick one, keep it
 stable, do not regenerate it per launch.
+
+Image URLs point at a public CDN, so `AsyncImage` loads them without a key and
+without a custom transport. One thing to satisfy yourself about before you
+build on it: image search does not promise a stable order across calls. If you
+paginate, prove to yourself that page two really is page two.
 
 A breed decodes as:
 

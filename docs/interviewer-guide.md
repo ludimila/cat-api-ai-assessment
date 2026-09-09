@@ -92,6 +92,26 @@ pass, which is exactly why it matters.
 
 Did they touch `BreedCache` unprompted?
 
+## Watching the image feature
+
+At 25 points it is the biggest item on the menu and the one most likely to be
+attempted first. It also contains the only trap the candidate is warned about
+without being told the answer: `/v1/images/search` orders randomly by default,
+so paging without `order=ASC` silently returns overlapping pages. The brief
+tells them to satisfy themselves that page two is really page two. Watch what
+they do with that sentence.
+
+The three outcomes, in ascending order of what they tell you. Some candidates
+ignore it and ship duplicates, which the acceptance criteria catches. Some read
+the API docs and add `order=ASC` because the documentation said so. A few
+actually check: call the same page twice, notice the ids differ, and fix it
+from evidence. The last group is small and worth paying attention to, because
+that is the habit that catches the bugs nobody warned them about.
+
+The total count arrives in the `pagination-count` header, not the body, so a
+correct implementation stops at the end instead of paging into an empty array.
+Details are in `DEFECTS.md`.
+
 ## Debrief questions
 
 Open the transcript and the meter together and go through it with them. This is

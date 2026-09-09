@@ -24,9 +24,9 @@ The key is read from `../.env/cat` (a file holding the bare key) or from a
 ## The rules
 
 1. **Two hours wall clock.**
-2. **Working code only.** Anything you claim must build and run on the
-   simulator in front of me. Code that does not build counts for nothing, and
-   there is no partial credit for intent.
+2. **Working code only.** Anything you say is done must build and run on the
+   simulator in front of me. "Done" means you watched it work, not that the
+   model said so.
 3. **Use Claude Code however you like.** Plan mode, subagents, `/clear`,
    editing `CLAUDE.md`, hooks. Writing code by hand is also fair game and often
    faster than explaining it.
@@ -39,7 +39,7 @@ the session open when time is called.
 
 ---
 
-## Task 1 — fix the search race (40 points)
+## Task 1 — fix the search race
 
 The breed search shows the wrong results. Type `sib`, then quickly type over it
 to make `siam`, and the list can settle on Siberian: the response for the query
@@ -61,7 +61,7 @@ that is part of the task.
 
 ---
 
-## Task 2 — show breed images (60 points)
+## Task 2 — show breed images
 
 The app renders no images. Add them.
 

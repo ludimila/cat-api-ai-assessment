@@ -1,0 +1,110 @@
+[
+  {
+    "id": "abys",
+    "name": "Abyssinian",
+    "origin": "Egypt",
+    "temperament": "Active, Energetic, Independent, Intelligent, Gentle",
+    "description": "The Abyssinian is easy to care for, and a joy to have in your home. They are affectionate cats and love both people and other animals.",
+    "life_span": "14 - 15",
+    "reference_image_id": "0XYvRd7oD"
+  },
+  {
+    "id": "beng",
+    "name": "Bengal",
+    "origin": "United States",
+    "temperament": "Alert, Agile, Energetic, Demanding, Intelligent",
+    "description": "Bengals are a lot of fun to live with, but they're definitely not the cat for everyone, or for first-time cat owners.",
+    "life_span": "12 - 15",
+    "reference_image_id": "O3btzLlsO"
+  },
+  {
+    "id": "birm",
+    "name": "Birman",
+    "origin": "France",
+    "temperament": "Affectionate, Active, Gentle, Social",
+    "description": "The Birman is a docile, quiet cat who loves people and will follow them from room to room.",
+    "life_span": "14 - 16",
+    "reference_image_id": "HOrX5gwLS"
+  },
+  {
+    "id": "bsho",
+    "name": "British Shorthair",
+    "origin": "United Kingdom",
+    "temperament": "Affectionate, Easy Going, Gentle, Loyal, Patient",
+    "description": "The British Shorthair is a calm and undemanding companion with a famously round face.",
+    "life_span": "12 - 17",
+    "reference_image_id": "ozCJmoIRK"
+  },
+  {
+    "id": "mcoo",
+    "name": "Maine Coon",
+    "origin": "United States",
+    "temperament": "Adaptable, Intelligent, Loving, Gentle, Independent",
+    "description": "Maine Coons are known as the gentle giants of the cat world and are exceptionally good with children.",
+    "life_span": "12 - 15",
+    "reference_image_id": "OOD3VXAQn"
+  },
+  {
+    "id": "norw",
+    "name": "Norwegian Forest Cat",
+    "origin": "Norway",
+    "temperament": "Sweet, Active, Playful, Intelligent, Social",
+    "description": "The Norwegian Forest Cat is a sweet, loving cat who appreciates praise and likes to be with people.",
+    "life_span": "12 - 16",
+    "reference_image_id": "JHF-jXcSd"
+  },
+  {
+    "id": "pers",
+    "name": "Persian",
+    "origin": "Iran (Persia)",
+    "temperament": "Affectionate, Loyal, Sedate, Quiet",
+    "description": "Persians are sweet, gentle cats who prefer a serene home where little changes from day to day.",
+    "life_span": "14 - 15",
+    "reference_image_id": "0XYvRd7o0"
+  },
+  {
+    "id": "ragd",
+    "name": "Ragdoll",
+    "origin": "United States",
+    "temperament": "Affectionate, Friendly, Gentle, Quiet, Easygoing",
+    "description": "Ragdolls love their people, greeting them at the door and following them around the house.",
+    "life_span": "12 - 17",
+    "reference_image_id": "oGefY4YoG"
+  },
+  {
+    "id": "siam",
+    "name": "Siamese",
+    "origin": "Thailand",
+    "temperament": "Active, Agile, Clever, Sociable, Loving, Energetic",
+    "description": "While Siamese cats are extremely fond of their people, they will follow you around and supervise your every move.",
+    "life_span": "12 - 15",
+    "reference_image_id": "ai6Jps4sx"
+  },
+  {
+    "id": "sibe",
+    "name": "Siberian",
+    "origin": "Russia",
+    "temperament": "Curious, Intelligent, Loyal, Sweet, Agile, Playful",
+    "description": "The Siberian is a slow-maturing breed, taking as long as five years to fully develop.",
+    "life_span": "12 - 15",
+    "reference_image_id": "3bkZAjRh1"
+  },
+  {
+    "id": "sphy",
+    "name": "Sphynx",
+    "origin": "Canada",
+    "temperament": "Curious, Friendly, Gentle, Lively, Social",
+    "description": "The Sphynx is an extrovert who demands attention and behaves more like a dog than a cat.",
+    "life_span": "12 - 15",
+    "reference_image_id": "vFuhJmiIM"
+  },
+  {
+    "id": "tonk",
+    "name": "Tonkinese",
+    "origin": "Canada",
+    "temperament": "Curious, Intelligent, Lively, Outgoing, Playful, Social",
+    "description": "Tonkinese are the busybodies of the cat world, wanting to be involved in everything you do.",
+    "life_span": "14 - 16",
+    "reference_image_id": "5AXtRcQZm"
+  }
+]

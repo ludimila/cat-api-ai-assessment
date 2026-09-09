@@ -1,86 +1,149 @@
-# CatBudget — senior iOS AI-usage assessment
+# CatBudget
 
-A two-hour live pairing exercise that measures how a senior iOS engineer uses
-an AI coding agent, not whether they can write Swift.
+A SwiftUI app for iOS 17 that lists cat breeds from
+[The Cat API](https://thecatapi.com/). It builds, it runs, and its search is
+broken.
 
-The candidate gets a small SwiftUI app built on [The Cat API](https://thecatapi.com/),
-a deliberately broken search, a menu of features priced in points, and a hard
-token budget. Because tokens cost points, the exercise makes prompt quality,
-context management, and verification discipline visible and comparable.
+You have **two hours** and exactly two tasks. Read this page fully before you
+start prompting; reading costs you nothing and guessing costs you time.
 
-## Breed images
-
-The starter renders no images. Downloading them is the highest-value item on the
-menu, and it works: image URLs come from the API but the files themselves sit on
-a public CDN, so `AsyncImage` loads them with no key and no custom transport.
-
-```
-GET /v1/images/search?breed_ids=beng&limit=10&page=0&order=ASC
-GET /v1/images/{reference_image_id}          # the breed's own cover image
-```
-
-The first returns a list, the second resolves the `reference_image_id` every
-breed already carries. Both were verified against the live API.
-
-There is a trap in it. Ordering defaults to random, so paging without
-`order=ASC` returns overlapping pages and the same cat twice. The total count
-arrives in the `pagination-count` response header rather than the body. Whether
-a candidate finds that themselves is one of the more interesting things this
-exercise surfaces.
-
-## Running a session
+## Setup
 
 ```bash
-git clone <this repo> ~/catbudget-session      # same path every time
-cd ~/catbudget-session
-mkdir .env && pbpaste > .env/cat               # the bare Cat API key
-cd starter && make build && make test          # 2 tests must pass
+cd starter
+make generate    # writes Secrets.xcconfig from the API key, runs xcodegen
+make build
+make test        # 2 tests, both passing
+make run         # installs and launches on the simulator
 ```
 
-`make generate` accepts either layout: a `.env/cat` file holding the bare key,
-or a `.env` file with a `CAT_API_KEY=...` line. Both are gitignored.
+The key is read from `../.env/cat` (a file holding the bare key) or from a
+`../.env` file with a `CAT_API_KEY=...` line. With no key the app serves
+`Fixtures/breeds.json` with simulated latency, so everything still runs.
 
-Then hand the candidate `docs/candidate-brief.md`, note the start time, and
-follow `docs/interviewer-guide.md`.
+## The rules
 
-At any point:
+1. **Two hours wall clock.**
+2. **Working code only.** Anything you claim must build and run on the
+   simulator in front of me. Code that does not build counts for nothing, and
+   there is no partial credit for intent.
+3. **Use Claude Code however you like.** Plan mode, subagents, `/clear`,
+   editing `CLAUDE.md`, hooks. Writing code by hand is also fair game and often
+   faster than explaining it.
+4. **Talk while you work.** Say what you are about to ask for and why. This is
+   an assessment of judgment, not typing speed.
 
-```bash
-make budget                                    # the candidate's meter
-python3 tools/budget.py --project-dir starter --since 2026-09-09T14:00 --json
+Afterwards we go through your session together: what you asked for, what you
+accepted, and what you checked. Nothing is inspected behind your back, so leave
+the session open when time is called.
+
+---
+
+## Task 1 — fix the search race (40 points)
+
+The breed search shows the wrong results. Type `sib`, then quickly type over it
+to make `siam`, and the list can settle on Siberian: the response for the query
+you abandoned arrives last and overwrites the one you actually asked for.
+
+Ship three things:
+
+1. A fix that makes the **last query typed** the one that wins, reliably rather
+   than usually.
+2. Cancellation of work that is no longer wanted.
+3. **An async unit test that fails against the current code and passes against
+   yours.** `Tests/CatBudgetTests/Support/StubURLProtocol.swift` is already in
+   the project and gives each stubbed response its own delay. The test must
+   await a real signal from the code. A test that passes because you slept long
+   enough is not a test, and I will read it as one.
+
+You will find that the code as written gives a test nothing to await. Fixing
+that is part of the task.
+
+---
+
+## Task 2 — show breed images (60 points)
+
+The app renders no images. Add them.
+
+**Accepted when** each row shows its breed's image, and opening a breed shows a
+scrollable gallery that pages correctly: no duplicates, no gaps, and it stops at
+the end rather than paging into nothing.
+
+### How to call the image endpoints
+
+Base URL `https://api.thecatapi.com/v1`, header `x-api-key` on every request.
+Without the header you get `403`.
+
+**One image, the breed's own cover.** Every breed already carries a
+`reference_image_id`.
+
+```
+GET /images/ai6Jps4sx
 ```
 
-## What is here
+```json
+{
+  "id": "ai6Jps4sx",
+  "url": "https://cdn2.thecatapi.com/images/ai6Jps4sx.jpg",
+  "width": 1110,
+  "height": 811
+}
+```
 
-| Path | What it is |
-|---|---|
-| `docs/candidate-brief.md` | Handed to the candidate at the start |
-| `docs/rubric.md` | Four scored dimensions with anchors |
-| `docs/interviewer-guide.md` | Timeline, what to watch, debrief questions |
-| `docs/scoring-sheet.md` | Copy per candidate |
-| `starter/` | The app. Builds, runs, and has two seeded bugs |
-| `tools/budget.py` | Reads Claude Code transcripts, reports weighted spend |
-| `tools/reference/` | Solutions and proofs. **Interviewer only** |
+**Many images for one breed.** `breed_ids` takes the breed's `id`, such as
+`beng` or `siam`.
 
-## The seeded bugs
+```
+GET /images/search?breed_ids=beng&limit=10&page=0&order=ASC
+```
 
-A stale-result race in the breed search, which is the candidate's mandatory
-first task, and an unguarded shared cache that only surfaces under Swift 6 mode
-or Thread Sanitizer, which is a bonus almost nobody finds.
+```json
+[
+  { "id": "J2PmlIizw", "url": "https://cdn2.thecatapi.com/images/J2PmlIizw.jpg",
+    "width": 1920, "height": 1080 }
+]
+```
 
-Both are verified rather than asserted. The reference test fails against the
-starter and passes against the fix, and the sanitizer names `BreedCache.store`
-as a Swift access race. See `docs/interviewer-guide.md`.
+The response is a bare array. The **total count is not in the body**; it arrives
+in the `pagination-count` response header, alongside `pagination-page` and
+`pagination-limit`. Bengal has 22 images.
 
-## Before the first candidate
+Three things worth knowing before you build on this:
 
-Set the token cap by piloting the exercise with one internal engineer. The
-default of 1,500,000 weighted tokens is a starting guess, not a measurement.
-Aim for a strong performance to land at 70–90% of the cap.
+The image files sit on a public CDN. `cdn2.thecatapi.com` needs no API key and
+no custom transport, so `AsyncImage` loads a `url` straight from the JSON.
 
-## Keys
+**Image search does not promise a stable order.** Satisfy yourself about what
+the default ordering actually does before you paginate, and prove to yourself
+that page two really is page two. This is the part of the task most likely to
+ship broken.
 
-`make generate` reads the key and writes `starter/Secrets.xcconfig`, which is
-gitignored along with `.env` in either layout. Neither the key nor the generated
-Xcode project is ever committed. With no key the app falls back to
-`starter/Fixtures/breeds.json`, so a session survives the API being down.
+`limit` caps at 100 for a single request, and the free tier allows 10,000
+requests per month, so avoid anything that polls.
+
+### Reference: a breed
+
+```json
+{
+  "id": "siam",
+  "name": "Siamese",
+  "origin": "Thailand",
+  "temperament": "Active, Agile, Clever",
+  "life_span": "12 - 15",
+  "reference_image_id": "ai6Jps4sx"
+}
+```
+
+---
+
+## What is being assessed
+
+Not whether you can write Swift. Two hours is enough for both tasks, so the
+interesting part is everything around them: how precisely you direct the model,
+what you read versus what you search, whether you verify a claim before
+repeating it, and what you choose to do yourself.
+
+## When time is called
+
+Leave the repository where it is and do not clear or delete your Claude Code
+session.

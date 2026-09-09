@@ -8,16 +8,14 @@ SIMULATOR   ?= iPhone 17
 DESTINATION := platform=iOS Simulator,name=$(SIMULATOR)
 ENV_FILE    := ../.env
 XCCONFIG    := Secrets.xcconfig
-REPO_ROOT   := $(shell cd .. && pwd)
 
-.PHONY: help generate build test run budget clean
+.PHONY: help generate build test run clean
 
 help:
 	@echo "make generate  Write Secrets.xcconfig from ../.env and run xcodegen"
 	@echo "make build     Build the app for the iOS Simulator"
 	@echo "make test      Run the unit tests"
 	@echo "make run       Build, install and launch on the booted simulator"
-	@echo "make budget    Show token spend for this assessment"
 	@echo "make clean     Remove generated project and build output"
 
 # The key is read from either layout:
@@ -66,9 +64,6 @@ run: build
 		| awk -F' = ' '/ BUILT_PRODUCTS_DIR /{d=$$2} / FULL_PRODUCT_NAME /{n=$$2} END{print d"/"n}'); \
 	xcrun simctl install booted "$$app"; \
 	xcrun simctl launch booted com.assessment.CatBudget
-
-budget:
-	@python3 $(REPO_ROOT)/tools/budget.py --project-dir "$$(pwd)"
 
 clean:
 	@rm -rf CatBudget.xcodeproj Support/Info.plist build

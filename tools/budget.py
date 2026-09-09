@@ -239,9 +239,10 @@ def main() -> int:
     directory = session_dir(project_dir)
 
     if directory is None:
-        print(f"No Claude Code transcripts found for {project_dir}", file=sys.stderr)
-        print("Run at least one prompt in that directory first.", file=sys.stderr)
-        return 2
+        # Normal at the start of a session: nothing has been spent yet.
+        print(f"\n  No Claude Code transcripts yet for {project_dir}")
+        print("  Nothing spent. The meter starts counting at your first prompt.\n")
+        return 0
 
     result = collect(directory, parse_since(args.since))
 

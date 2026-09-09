@@ -117,8 +117,13 @@ to run. Names and structure make the next change obvious.
 
 ## Hard metrics
 
-Copy these from `make budget --json` into the scoring sheet. They are evidence
-for the narrative score, not a substitute for it.
+Copy these into the scoring sheet from:
+
+```bash
+python3 tools/budget.py --project-dir starter --since <session start> --json
+```
+
+They are evidence for the narrative score, not a substitute for it.
 
 | Metric | Read it as |
 |---|---|

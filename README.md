@@ -13,9 +13,12 @@ context management, and verification discipline visible and comparable.
 ```bash
 git clone <this repo> ~/catbudget-session      # same path every time
 cd ~/catbudget-session
-cp .env.example .env                           # paste a real Cat API key
+mkdir .env && pbpaste > .env/cat               # the bare Cat API key
 cd starter && make build && make test          # 2 tests must pass
 ```
+
+`make generate` accepts either layout: a `.env/cat` file holding the bare key,
+or a `.env` file with a `CAT_API_KEY=...` line. Both are gitignored.
 
 Then hand the candidate `docs/candidate-brief.md`, note the start time, and
 follow `docs/interviewer-guide.md`.
@@ -57,8 +60,7 @@ Aim for a strong performance to land at 70–90% of the cap.
 
 ## Keys
 
-`.env` is gitignored and holds `CAT_API_KEY`. `make generate` reads it and
-writes `starter/Secrets.xcconfig`, which is also gitignored. Neither the key nor
-the generated Xcode project is ever committed. With no real key the app falls
-back to `starter/Fixtures/breeds.json`, so a session survives the API being
-down.
+`make generate` reads the key and writes `starter/Secrets.xcconfig`, which is
+gitignored along with `.env` in either layout. Neither the key nor the generated
+Xcode project is ever committed. With no key the app falls back to
+`starter/Fixtures/breeds.json`, so a session survives the API being down.

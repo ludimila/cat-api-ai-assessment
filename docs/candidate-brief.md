@@ -105,7 +105,7 @@ make run         # installs and launches on the simulator
 make budget      # your meter
 ```
 
-If `../.env` has no real key the app serves `Fixtures/breeds.json` with
+If no Cat API key is configured the app serves `Fixtures/breeds.json` with
 simulated latency, so everything still runs. The search race reproduces in that
 mode too.
 
